@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>CaseHub — симулятор кейсов CS2</title>
+<style>
+:root{--bg:#0c0e16;--p:#151a29;--p2:#1e2538;--t:#eaeefb;--m:#8791b0;--ac:#ffb020;--ok:#3ddc84;--bad:#ff4d5e;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(1200px 500px at 50% -10%,#1d2750,transparent),var(--bg);color:var(--t);font:15px/1.4 "Segoe UI",system-ui,sans-serif;min-height:100vh}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer;border:0}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;background:#0a0c14cc;border-bottom:1px solid #222a42;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;backdrop-filter:blur(8px)}
+.logo{font-weight:800;font-size:22px;letter-spacing:.5px}.logo b{color:var(--ac)}
+nav{display:flex;gap:4px;flex-wrap:wrap}nav button{background:0;color:var(--m);padding:8px 14px;border-radius:8px;font-weight:600}nav button.on,nav button:hover{background:var(--p2);color:var(--t)}
+.bal{display:flex;gap:8px;align-items:center}.bal span{background:var(--p2);padding:8px 14px;border-radius:8px;font-weight:700;color:var(--ac)}
+.btn{background:var(--ac);color:#1a1200;font-weight:700;padding:10px 18px;border-radius:8px}.btn:hover{filter:brightness(1.1)}.btn.g{background:var(--p2);color:var(--t)}.btn.r{background:var(--bad);color:#fff}.btn:disabled{opacity:.4;cursor:not-allowed}
+main{max-width:1200px;margin:0 auto;padding:20px}
+h2{margin:6px 0 14px;font-size:22px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.chip{background:var(--p);color:var(--m);padding:7px 14px;border-radius:20px;border:1px solid #222a42}.chip.on{background:var(--ac);color:#1a1200;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.case{background:linear-gradient(180deg,var(--p2),var(--p));border:1px solid #262f4a;border-radius:14px;padding:16px;text-align:center;transition:.2s;position:relative}
+.case:hover{border-color:var(--ac)}
+.box{height:130px;margin:4px auto 10px;display:grid;place-items:center;perspective:600px}.box.big{transform:scale(1.3);height:150px}
+.case h3{margin:0 0 4px;font-size:16px}.pr{color:var(--ac);font-weight:700}.sub{color:var(--m);font-size:12px}
+.del{position:absolute;top:8px;right:8px;background:#0008;color:var(--bad);border-radius:6px;padding:2px 8px}
+.sk{--c:#888;background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--c) 30%,transparent),var(--p) 70%);border:1px solid #262f4a;border-bottom:3px solid var(--c);border-radius:10px;padding:10px;text-align:center;min-width:0}
+.sk .ic{height:70px;display:grid;place-items:center}.wp{width:100%;height:56px;filter:drop-shadow(0 6px 5px #000b)}.sk small{color:var(--m);display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sk b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sk i{font-style:normal;color:var(--ac);font-size:12px;font-weight:700}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.sk.sel{outline:2px solid var(--ok)}.sk.pick{cursor:pointer}.sk.pick:hover{filter:brightness(1.25)}
+.ov{position:fixed;inset:0;background:#000c;z-index:20;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:max(20px,env(safe-area-inset-top,0px)) 14px 30px}
+.md{background:var(--p);border:1px solid #2a3454;border-radius:16px;width:100%;max-width:980px;padding:20px}
+.md .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.rl{position:relative;overflow:hidden;background:#0a0d17;border-radius:12px;height:158px;margin:10px 0}
+.rl::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:var(--ac);box-shadow:0 0 14px var(--ac);z-index:2}
+.st{display:flex;gap:6px;padding:8px 0;height:100%;will-change:transform}.st .sk{flex:0 0 130px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.res{text-align:center;margin:10px 0}.res .sk{display:inline-block;width:190px}
+.up{display:grid;grid-template-columns:1fr 280px 1fr;gap:16px;align-items:start}
+.pn{background:var(--p);border:1px solid #222a42;border-radius:14px;padding:14px}
+.pn .sg{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));max-height:430px;overflow:auto}
+.wh{width:240px;height:240px;border-radius:50%;margin:10px auto;position:relative;display:grid;place-items:center;border:4px solid #0b0e18}
+.wh .in{width:176px;height:176px;border-radius:50%;background:var(--p);display:grid;place-items:center;text-align:center;font-weight:800;font-size:30px;z-index:1}
+.nd{position:absolute;inset:0;transition:transform 4.2s cubic-bezier(.12,.7,.1,1)}.nd::before{content:"";position:absolute;left:50%;top:-8px;margin-left:-4px;width:8px;height:62px;background:#fff;border-radius:4px;box-shadow:0 0 12px #fff}
+input[type=text],input[type=number],select{background:var(--p2);border:1px solid #2a3454;border-radius:8px;padding:9px 12px;width:100%}
+.fr{display:grid;grid-template-columns:1fr 160px;gap:10px;margin-bottom:12px}
+.sec{margin-bottom:26px}.sec h3{margin:0 0 10px;display:flex;gap:10px;align-items:baseline}
+.tt{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--p2);border:1px solid var(--ac);padding:10px 18px;border-radius:10px;z-index:40}
+.flt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.ic img{max-width:100%;max-height:70px;filter:drop-shadow(0 5px 5px #000b)}.cube i img{width:86%;height:86%;object-fit:contain}.grid .cube{animation-play-state:paused}.grid .case:hover .cube{animation-play-state:running}
+main,.ov{perspective:1400px}.case,.sk{transform-style:preserve-3d;transition:transform .12s,border-color .2s;will-change:transform}
+.pn,.md,.case{box-shadow:0 1px 0 #3a4670 inset,0 2px 0 #0007,0 18px 38px #000a}
+.cube{width:90px;height:90px;position:relative;transform-style:preserve-3d;animation:rot 9s linear infinite}
+.cube i{position:absolute;inset:0;border:2px solid #ffffff40;display:grid;place-items:center;font-style:normal;font-size:40px;background:linear-gradient(135deg,hsl(var(--h) 75% 48%),hsl(var(--h) 75% 20%));box-shadow:inset 0 0 22px #0009}
+.cube.shk{animation:rot 1.2s linear infinite,shk .18s linear infinite}
+@keyframes rot{from{transform:rotateX(-20deg) rotateY(0)}to{transform:rotateX(-20deg) rotateY(360deg)}}
+@keyframes shk{50%{margin-left:6px}}
+.wh{transform:perspective(700px) rotateX(16deg);box-shadow:0 26px 30px -14px #000}
+.rl{perspective:700px;box-shadow:inset 0 0 40px #000}
+@media(max-width:860px){.up{grid-template-columns:1fr}.fr{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.st,.nd{transition:none!important}}
+</style></head><body>
+<header><div class="logo">Case<b>Hub</b> <span style="font-size:11px;color:var(--m);font-weight:500">CS2 симулятор</span></div>
+<nav id="nav"></nav><div class="bal"><span id="bal"></span><button class="btn g" onclick="bonus()">+500 бонус</button></div></header>
+<main id="app"></main><div id="ov"></div>
+<script>
+const R={w:['#b0c3d9','Ширпотреб'],i:['#5e98d9','Промышленное'],b:['#4b69ff','Армейское'],p:['#8847ff','Ограниченное'],k:['#d32ce6','Засекреченное'],r:['#eb4b4b','Тайное'],g:['#ffd700','Нож / перчатки']};
+const W={w:8000,i:8000,b:7992,p:1598,k:320,r:64,g:26};
+const S0=[['P250 | Visitor','b',35],['MP7 | Neon Ply','b',60],['Nova | Dark Sigil','b',20],['MAC-10 | Disco Tech','b',45],['UMP-45 | Moonrise','b',55],['Five-SeveN | Fairy Tale','b',80],['SG 553 | Ol\' Rusty','b',25],['Tec-9 | Fuel Injector','b',120],
+['Glock-18 | Vogue','p',150],['SSG 08 | Dragonfire','p',420],['MP9 | Hydra','p',200],['P90 | Asiimov','p',380],['Desert Eagle | Printstream','p',600],['USP-S | Cortex','p',310],
+['AK-47 | Slate','k',750],['M4A4 | Neo-Noir','k',1900],['AWP | Atheris','k',900],['M4A1-S | Cyrex','k',1500],['USP-S | Kill Confirmed','k',3200],
+['AK-47 | Asiimov','r',5200],['AWP | Hyper Beast','r',7800],['M4A1-S | Printstream','r',9500],['AWP | Dragon Lore','r',140000],
+['★ Karambit | Doppler','g',38000],['★ Butterfly Knife | Fade','g',90000],['★ Sport Gloves | Pandora\'s Box','g',60000],['★ M9 Bayonet | Crimson Web','g',70000],['★ Skeleton Knife | Slaughter','g',30000]];
+const BASE0=[{n:'Старт',p:49,c:'Дешёвые',e:'📦',s:[0,1,2,3,4,5,6,8,13]},{n:'Неон',p:199,c:'Классика',e:'🎁',s:[1,3,4,7,8,9,10,11,14,16]},{n:'Redline Box',p:499,c:'Классика',e:'🧰',s:[4,9,10,12,13,14,15,16,19,20]},{n:'Печатный',p:1490,c:'Дорогие',e:'💼',s:[11,12,13,15,17,18,19,21,23]},{n:'Ножи',p:5990,c:'Дорогие',e:'🗡️',s:[17,18,19,20,21,23,24,25,26,27]},{n:'Легенда',p:14990,c:'Дорогие',e:'👑',s:[19,20,21,22,23,24,25,26,27]}];
+let S=[],BASE=[],IDX=new Map(),ready=false;
+let st={bal:1000,inv:[],cu:[]},tab='cases',cat='Все',uid=1,upSel=[],upT=null,upQ='',upC='all',busy=false,sortAsc=false;
+let SV=null;try{SV=JSON.parse(localStorage.getItem('ch3')||'null')}catch(e){}
+const save=()=>{if(!ready)return;try{localStorage.setItem('ch3',JSON.stringify({bal:st.bal,inv:st.inv.map(x=>({k:S[x.i][0],u:x.u})),cu:st.cu.map(c=>({n:c.n,p:c.p,s:c.s.map(i=>S[i][0])}))}))}catch(e){}};
+const load=()=>{if(!SV)return;st.bal=SV.bal??1000;st.inv=(SV.inv||[]).map(x=>({i:IDX.get(x.k),u:x.u})).filter(x=>x.i!=null);st.cu=(SV.cu||[]).map(c=>({...c,s:c.s.map(k=>IDX.get(k)).filter(i=>i!=null)})).filter(c=>c.s.length>=3);uid=st.inv.reduce((a,x)=>Math.max(a,x.u),0)+1};
+const cases=()=>[...BASE,...st.cu.map(c=>({...c,c:'Мои кейсы',e:'🧪',cu:1}))];
+const fmt=n=>Math.round(n).toLocaleString('ru-RU')+' ₽';
+const hs=s=>[...s].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);
+const TY=n=>n.startsWith('★')?(n.includes('Gloves')?'gl':'kn'):/AWP|SSG/.test(n)?'sn':/AK|M4|SG/.test(n)?'rf':/MP|UMP|MAC|P90|Nova/.test(n)?'sm':'pi';
+const SH={rf:'M3 26h20l5-6h34l4 4h24l9-3 10 3v6H78l-4 4H62l-3 12h-9l2-12H30l-6 5H3z',sn:'M2 28h30l4-5h50l4-3h30v8H88l-4 4H70l-3 11h-9l2-11H36l-6 4H2zM40 15h22v5H40z',sm:'M12 24h30l5-5h30l4 5h22v7H80l-4 3H66l-3 12h-9l2-12H38l-5 4H12z',pi:'M28 14h66v11H74l-5 6v13H55V32H48l-5 5H28z',kn:'M12 46 90 10q10-4 18 2L60 42zM6 44l12 2-3 8-10-3z',gl:'M30 48V26l5-14 6 2-1 12 5-16 6 1-1 15 5-15 6 2-2 15 5-9 6 3-5 22-8 8H38z'};
+const wp=i=>{const n=S[i][0],c=R[S[i][1]][0],h=hs(n)%360,a=hs(n+'x')%90,d=SH[TY(n)];return `<svg viewBox="0 0 120 56" class="wp"><defs><linearGradient id="g${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="hsl(${h} 65% 28%)"/></linearGradient><pattern id="p${i}" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(${a})"><rect width="3" height="9" fill="#fff" opacity=".3"/></pattern></defs><path d="${d}" fill="url(#g${i})" stroke="#000" stroke-width="1.3"/><path d="${d}" fill="url(#p${i})"/></svg>`};
+const cube=c=>`<div class="cube" style="--h:${hs(c.n)%360};animation-delay:-${hs(c.n)%9}s">${['rotateY(0deg)','rotateY(90deg)','rotateY(180deg)','rotateY(270deg)','rotateX(90deg)','rotateX(-90deg)'].map((t,k)=>`<i style="transform:${t} translateZ(45px)">${k<4?(c.img?`<img loading="lazy" src="${c.img}" onerror="this.replaceWith('📦')">`:c.e):''}</i>`).join('')}</div>`;
+document.addEventListener('pointermove',e=>{const t=e.target.closest&&e.target.closest('.case,.sk');if(!t||t.closest('.st'))return;const r=t.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;t.style.transform=`perspective(700px) rotateX(${-y*16}deg) rotateY(${x*16}deg) translateZ(10px)`;t.dataset.t=1},{passive:true});
+document.addEventListener('pointerout',e=>{const t=e.target.closest&&e.target.closest('.case,.sk');if(t&&t.dataset.t&&!t.contains(e.relatedTarget)){t.style.transform='';delete t.dataset.t}});
+const ico=n=>n.startsWith('★')?(n.includes('Gloves')?'🧤':'🔪'):/AWP|SSG/.test(n)?'🎯':/AK|M4|SG|UMP|MP|P90|Nova/.test(n)?'🔫':'🔫';
+const sk=(i,x='',extra='')=>{const s=S[i];const [w,...r]=s[0].split(' | ');return `<div class="sk ${x}" ${extra} style="--c:${R[s[1]][0]}"><div class="ic">${s[3]?`<img loading="lazy" src="${s[3]}" onerror="this.outerHTML=wp(${i})">`:wp(i)}</div><small>${r.length?w:'Базовый'}</small><b title="${s[0]}">${r.length?r.join(' | '):w}</b><i>${fmt(s[2])}</i></div>`};
+function pick(c){const rs=[...new Set(c.s.map(i=>S[i][1]))];let x=Math.random()*rs.reduce((a,r)=>a+W[r],0),r=rs[0];for(const k of rs){x-=W[k];if(x<0){r=k;break}}const l=c.s.filter(i=>S[i][1]==r);return l[Math.random()*l.length|0]}
+function toast(m){const d=document.createElement('div');d.className='tt';d.textContent=m;document.body.append(d);setTimeout(()=>d.remove(),2200)}
+function bonus(){st.bal+=500;save();head();toast('+500 ₽ на баланс')}
+function head(){document.getElementById('bal').textContent=fmt(st.bal);document.getElementById('nav').innerHTML=[['cases','Кейсы'],['upgrade','Апгрейд'],['inv','Инвентарь ('+st.inv.length+')'],['skins','Скины'],['create','Создать кейс']].map(([k,n])=>`<button class="${tab==k?'on':''}" onclick="go('${k}')">${n}</button>`).join('')}
+function go(t){if(busy)return;tab=t;render()}
+function render(){head();const a=document.getElementById('app');({cases:vCases,upgrade:vUp,inv:vInv,skins:vSkins,create:vCreate})[tab](a)}
+let q='',srt='new',lim=48;
+function vCases(a){const cats=['Все','Кейсы','Сувенирные','Дешёвые','Дорогие','Мои кейсы'];
+a.innerHTML=`<h2>Кейсы <span class="sub">${note}</span></h2>${note.startsWith('офлайн')?`<div class="pn" style="margin-bottom:14px;border-color:var(--bad)"><b>Не удалось загрузить базу кейсов.</b> <span class="sub">${dbg.slice(0,3).join(' · ')}</span><p>Откройте файл в обычном браузере (Chrome, Edge, Firefox) с интернетом, а не во встроенном просмотре. Или скачайте <a href="https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/crates.json" target="_blank" style="color:var(--ac)">crates.json</a> и выберите файл здесь:</p><input type="file" accept=".json" onchange="pickFile(this)"> <button class="btn g" onclick="location.reload()">Повторить</button></div>`:''}<div class="fr"><input type="text" placeholder="Поиск кейса" value="${q}" oninput="q=this.value;lim=48;drawC()"><select onchange="srt=this.value;drawC()"><option value="new" ${srt=='new'?'selected':''}>Новые</option><option value="pa" ${srt=='pa'?'selected':''}>Цена ↑</option><option value="pd" ${srt=='pd'?'selected':''}>Цена ↓</option></select></div><div class="chips">${cats.map(c=>`<button class="chip ${c==cat?'on':''}" onclick="cat='${c}';lim=48;vCases(document.getElementById('app'))">${c}</button>`).join('')}</div><div class="grid" id="cg"></div><div class="row" id="cm"></div>`;drawC()}
+function drawC(){let l=cases().map((c,i)=>({c,i})).filter(({c})=>(cat=='Все'||c.c==cat||(cat=='Дешёвые'&&c.p<200)||(cat=='Дорогие'&&c.p>=2000))&&c.n.toLowerCase().includes(q.toLowerCase()));
+l.sort((x,y)=>srt=='pa'?x.c.p-y.c.p:srt=='pd'?y.c.p-x.c.p:(y.c.cu?1:0)-(x.c.cu?1:0)||(y.c.d||'').localeCompare(x.c.d||''));
+document.getElementById('cg').innerHTML=l.slice(0,lim).map(({c,i})=>`<div class="case">${c.cu?`<button class="del" onclick="delCase(${i-BASE.length})">✕</button>`:''}<div class="box">${cube(c)}</div><h3>${c.n}</h3><div class="sub">${c.s.length} скинов · ${c.c}</div><div class="row" style="margin:10px 0 0"><button class="btn" onclick="openCase(${i})">${fmt(c.p)}</button></div></div>`).join('');
+document.getElementById('cm').innerHTML=l.length>lim?`<button class="btn g" onclick="lim+=48;drawC()">Показать ещё (${l.length-lim})</button>`:l.length?'':'<span class="sub">Ничего не найдено</span>'}
+function delCase(i){st.cu.splice(i,1);save();render()}
+let fast=false;
+function openCase(i){const c=cases()[i];document.getElementById('ov').innerHTML=`<div class="ov"><div class="md"><div class="top"><h2 style="margin:0">${c.e} ${c.n} — ${fmt(c.p)}</h2><button class="btn g" id="cl" onclick="closeOv()">Закрыть</button></div><div class="box big">${cube(c)}</div><div class="rl"><div class="st" id="stp">${Array(8).fill(0).map(()=>sk(c.s[Math.random()*c.s.length|0])).join('')}</div></div><div class="res" id="res"></div><div class="row"><button class="btn" id="go" onclick="spin(${i})">Открыть за ${fmt(c.p)}</button><label style="align-self:center;color:var(--m)"><input type="checkbox" ${fast?'checked':''} onchange="fast=this.checked"> Быстро</label></div><h3>Содержимое кейса</h3><div class="sg">${[...c.s].sort((x,y)=>S[y][2]-S[x][2]).map(x=>sk(x)).join('')}</div></div></div>`}
+function closeOv(){if(busy)return;document.getElementById('ov').innerHTML='';render()}
+function spin(i){const c=cases()[i];if(busy)return;if(st.bal<c.p){toast('Не хватает баланса — возьмите бонус');return}
+st.bal-=c.p;busy=true;head();const cb=document.querySelector(".md .cube");cb&&cb.classList.add("shk");const win=pick(c),N=48,P=40,ids=Array.from({length:N},(_,k)=>k==P?win:pick(c));
+const el=document.getElementById('stp'),go=document.getElementById('go');go.disabled=true;document.getElementById('res').innerHTML='';
+el.style.transition='none';el.style.transform='translateX(0)';el.innerHTML=ids.map(x=>sk(x)).join('');el.offsetWidth;
+const w=el.parentElement.clientWidth,off=(Math.random()-.5)*90,tx=-(P*136+65-w/2+off),d=fast?1.2:5.5;
+el.style.transition=`transform ${d}s cubic-bezier(.1,.75,.12,1)`;el.style.transform=`translateX(${tx}px)`;
+setTimeout(()=>{const u=uid++;st.inv.push({i:win,u});save();busy=false;cb&&cb.classList.remove("shk");go.disabled=false;head();
+document.getElementById('res').innerHTML=`<div>Вам выпало:</div>${sk(win)}<div class="row"><button class="btn g" onclick="sell(${u},true)">Продать за ${fmt(S[win][2])}</button></div>`;},d*1000+150)}
+function sell(u,inOv){const k=st.inv.findIndex(x=>x.u==u);if(k<0)return;st.bal+=S[st.inv[k].i][2];st.inv.splice(k,1);save();head();if(inOv)document.getElementById('res').innerHTML='<div class="sub">Предмет продан</div>';else render()}
+function vInv(a){const l=[...st.inv].sort((x,y)=>S[y.i][2]-S[x.i][2]),tot=l.reduce((s,x)=>s+S[x.i][2],0);
+a.innerHTML=`<h2>Инвентарь</h2><div class="row" style="justify-content:flex-start"><span class="sub" style="align-self:center">Стоимость: ${fmt(tot)}</span>${l.length?`<button class="btn r" onclick="sellAll()">Продать всё</button>`:''}</div>${l.length?`<div class="sg">${l.map(x=>`<div>${sk(x.i)}<button class="btn g" style="width:100%;margin-top:4px;padding:6px" onclick="sell(${x.u})">Продать</button></div>`).join('')}</div>`:'<p class="sub">Пока пусто. Откройте кейс во вкладке «Кейсы».</p>'}`}
+function sellAll(){st.inv.forEach(x=>st.bal+=S[x.i][2]);st.inv=[];upSel=[];save();render()}
+let sc='all';
+function vSkins(a){const cs=cases();a.innerHTML=`<h2>Скины по кейсам</h2><div class="fr"><select onchange="sc=this.value;drawS()"><option value="all">Все скины (первые 300)</option>${cs.map((c,i)=>`<option value="${i}" ${sc==i?'selected':''}>${c.n}</option>`).join('')}</select><button class="chip" onclick="sortAsc=!sortAsc;this.textContent=sortAsc?'Дешёвые сверху':'Дорогие сверху';drawS()">${sortAsc?'Дешёвые сверху':'Дорогие сверху'}</button></div><div class="sg" id="sl"></div>`;drawS()}
+function drawS(){const cs=cases();let l=sc=='all'?S.map((_,i)=>i):[...new Set((cs[+sc]||{s:[]}).s)];l.sort((x,y)=>sortAsc?S[x][2]-S[y][2]:S[y][2]-S[x][2]);document.getElementById('sl').innerHTML=l.slice(0,300).map(i=>sk(i)).join('')}
+let uf={q:'',r:'all',c:'all',s:'pa',a:'',b:'',lim:60};
+function chn(){const sum=upSel.reduce((s,u)=>{const x=st.inv.find(y=>y.u==u);return s+(x?S[x.i][2]:0)},0);return {sum,ch:upT!=null&&sum>0?Math.max(1,Math.min(95,sum/S[upT][2]*95)):0}}
+function vUp(a){upSel=upSel.filter(u=>st.inv.some(x=>x.u==u));const cs=cases();
+a.innerHTML=`<h2>Апгрейд</h2><div class="up"><div class="pn"><b>Ваши предметы</b> <span class="sub">(выберите)</span><div class="sg" id="ui" style="margin-top:10px"></div></div><div class="pn" style="text-align:center"><div class="sub" id="us"></div><div class="wh" id="wh"><div class="nd" id="nd" style="transform:rotate(${ang%360}deg)"></div><div class="in" id="chn"></div></div><div class="sub" id="ut"></div><div class="row"><button class="btn" id="ub" onclick="doUp()">Апгрейд</button></div><div id="ur" class="res"></div></div>
+<div class="pn"><b>Цель</b> <span class="sub" id="tc"></span><div class="flt"><input type="text" style="grid-column:1/3" placeholder="Поиск скина" value="${uf.q}" oninput="uf.q=this.value;uf.lim=60;drawT()"><select onchange="uf.r=this.value;uf.lim=60;drawT()"><option value="all">Любая редкость</option>${Object.keys(R).map(k=>`<option value="${k}" ${uf.r==k?'selected':''}>${R[k][1]}</option>`).join('')}</select><select onchange="uf.c=this.value;uf.lim=60;drawT()"><option value="all">Все кейсы</option>${cs.map((c,i)=>`<option value="${i}" ${uf.c==i?'selected':''}>${c.n}</option>`).join('')}</select><input type="number" placeholder="Цена от" value="${uf.a}" oninput="uf.a=this.value;uf.lim=60;drawT()"><input type="number" placeholder="Цена до" value="${uf.b}" oninput="uf.b=this.value;uf.lim=60;drawT()"><select style="grid-column:1/3" onchange="uf.s=this.value;drawT()"><option value="pa" ${uf.s=='pa'?'selected':''}>Сначала дешёвые</option><option value="pd" ${uf.s=='pd'?'selected':''}>Сначала дорогие</option></select></div><div class="sg" id="tl"></div><div class="row" id="tm"></div></div></div>`;drawI();drawT();upd()}
+function drawI(){document.getElementById('ui').innerHTML=[...st.inv].sort((x,y)=>S[y.i][2]-S[x.i][2]).map(x=>sk(x.i,'pick '+(upSel.includes(x.u)?'sel':''),`onclick="togUp(${x.u},this)"`)).join('')||'<span class="sub">Инвентарь пуст. Откройте кейс.</span>'}
+function drawT(){const cs=cases();let l=uf.c=='all'?S.map((_,i)=>i):[...new Set((cs[+uf.c]||{s:[]}).s)];const qq=uf.q.toLowerCase(),a=+uf.a||0,b=+uf.b||1e12;l=l.filter(i=>(uf.r=='all'||S[i][1]==uf.r)&&S[i][2]>=a&&S[i][2]<=b&&S[i][0].toLowerCase().includes(qq)).sort((x,y)=>uf.s=='pa'?S[x][2]-S[y][2]:S[y][2]-S[x][2]);
+document.getElementById('tc').textContent=l.length+' скинов';document.getElementById('tl').innerHTML=l.slice(0,uf.lim).map(i=>sk(i,'pick '+(upT==i?'sel':''),`onclick="setT(${i},this)"`)).join('');document.getElementById('tm').innerHTML=l.length>uf.lim?`<button class="btn g" onclick="uf.lim+=60;drawT()">Показать ещё</button>`:''}
+function setT(i,el){if(busy)return;upT=i;document.querySelectorAll('#tl .sel').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');upd()}
+function upd(){const {sum,ch}=chn();document.getElementById('wh').style.background=`conic-gradient(var(--ok) 0 ${ch}%,#2a3150 ${ch}% 100%)`;document.getElementById('chn').textContent=ch?ch.toFixed(1)+'%':'—';document.getElementById('us').textContent='Вложено: '+fmt(sum);document.getElementById('ut').textContent=upT!=null?'Цель: '+S[upT][0]+' · '+fmt(S[upT][2]):'Выберите цель справа';document.getElementById('ub').disabled=!ch||busy}
+function togUp(u,el){if(busy)return;const k=upSel.indexOf(u);k<0?upSel.push(u):upSel.splice(k,1);el.classList.toggle('sel');upd()}
+let ang=0;
+function doUp(){const ch=chn().ch;if(busy||!upSel.length||upT==null||!ch)return;busy=true;const win=Math.random()*100<ch,z=ch*3.6;
+const t=win?Math.random()*z*.9+z*.05:z+Math.random()*(360-z)*.9+(360-z)*.05;
+ang+=360*5+((t-ang%360)+360)%360;const nd=document.getElementById('nd');nd.style.transform=`rotate(${ang}deg)`;document.getElementById('ub').disabled=true;
+const inp=[...upSel];setTimeout(()=>{st.inv=st.inv.filter(x=>!inp.includes(x.u));let h;if(win){st.inv.push({i:upT,u:uid++});h=`<b style="color:var(--ok)">Успех! Вы выиграли</b>${sk(upT)}`}else h=`<b style="color:var(--bad)">Неудача — предметы потеряны</b>`;
+upSel=[];busy=false;save();head();render();document.getElementById('nd').style.transition='none';document.getElementById('nd').style.transform=`rotate(${ang%360}deg)`;document.getElementById('ur').innerHTML=h;ang%=360;setTimeout(()=>{const n=document.getElementById('nd');if(n)n.style.transition=''},50)},4400)}
+let cr={n:'',p:100,s:[],f:'all',q:'',lim:80};
+function vCreate(a){a.innerHTML=`<h2>Создать свой кейс</h2><div class="pn"><div class="fr"><input type="text" placeholder="Название кейса" value="${cr.n}" oninput="cr.n=this.value"><input type="number" min="1" value="${cr.p}" oninput="cr.p=+this.value"></div><input type="text" placeholder="Поиск скина" value="${cr.q}" oninput="cr.q=this.value;cr.lim=80;drawCr()" style="margin-bottom:10px"><div class="chips"><button class="chip ${cr.f=='all'?'on':''}" onclick="cr.f='all';render()">Все</button>${Object.keys(R).map(k=>`<button class="chip ${cr.f==k?'on':''}" style="${cr.f==k?'':'border-color:'+R[k][0]}" onclick="cr.f='${k}';render()">${R[k][1]}</button>`).join('')}</div><div class="sg" id="cl" style="max-height:480px;overflow:auto"></div><div class="row"><span class="sub" id="cs" style="align-self:center"></span><button class="btn g" onclick="cr.lim+=80;drawCr()">Показать ещё</button><button class="btn" onclick="mkCase()">Добавить кейс на сайт</button></div></div>`;drawCr()}
+const cnt=()=>document.getElementById('cs').textContent='Выбрано: '+cr.s.length+' (минимум 3)';
+function drawCr(){const qq=cr.q.toLowerCase(),l=S.map((_,i)=>i).filter(i=>(cr.f=='all'||S[i][1]==cr.f)&&S[i][0].toLowerCase().includes(qq)).sort((x,y)=>S[x][2]-S[y][2]),e=document.getElementById('cl'),y=e.scrollTop;e.innerHTML=l.slice(0,cr.lim).map(i=>sk(i,'pick '+(cr.s.includes(i)?'sel':''),`onclick="togCr(${i},this)"`)).join('');e.scrollTop=y;cnt()}
+function togCr(i,el){const k=cr.s.indexOf(i);k<0?cr.s.push(i):cr.s.splice(k,1);el.classList.toggle('sel');cnt()}
+function mkCase(){if(!cr.n.trim())return toast('Введите название');if(cr.s.length<3)return toast('Выберите минимум 3 скина');if(!(cr.p>0))return toast('Укажите цену');
+st.cu.push({n:cr.n.trim(),p:Math.round(cr.p),s:[...cr.s]});save();cr={n:'',p:100,s:[],f:'all',q:'',lim:80};cat='Мои кейсы';tab='cases';render();toast('Кейс добавлен')}
+const RK=n=>{n=(n||'').toLowerCase();return n.includes('consumer')?'w':n.includes('industrial')?'i':n.includes('mil-spec')?'b':n.includes('restricted')?'p':n.includes('classified')?'k':n.includes('covert')?'r':'g'};
+const BP={w:8,i:25,b:80,p:300,k:1200,r:5500,g:30000};
+const API=['https://bymykel.github.io/CSGO-API/api/en/','https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/','https://cdn.jsdelivr.net/gh/ByMykel/CSGO-API@main/public/api/en/'];
+const dbg=[];
+async function jf(f){for(const b of API){try{const ac=new AbortController(),t=setTimeout(()=>ac.abort(),60000);const r=await fetch(b+f,{signal:ac.signal});clearTimeout(t);if(r.ok)return await r.json();dbg.push(f+': HTTP '+r.status)}catch(e){dbg.push(f+': '+(e.name=='AbortError'?'таймаут':e.message))}}return null}
+function addSkin(o,rk){const n=o&&o.name;if(!n)return null;if(IDX.has(n))return IDX.get(n);const r=rk||RK(o.rarity&&o.rarity.name);let p=BP[r]*(.5+(hs(n)%150)/100);if(/Dragon Lore|Howl|Medusa|Gungnir/.test(n))p*=15;S.push([n,r,Math.max(3,Math.round(p)),o.image||null]);IDX.set(n,S.length-1);return S.length-1}
+const casePrice=c=>{const g={};c.s.forEach(i=>(g[S[i][1]]=g[S[i][1]]||[]).push(S[i][2]));const ks=Object.keys(g),tw=ks.reduce((a,k)=>a+W[k],0),ev=ks.reduce((a,k)=>a+W[k]/tw*g[k].reduce((x,y)=>x+y,0)/g[k].length,0);return Math.max(20,Math.round(ev*1.12/10)*10)};
+let note='';
+const upNote=()=>{note=S.length+' скинов · '+BASE.length+' кейсов'};
+function build(cr0){S=[];IDX=new Map();BASE=[];
+for(const c of cr0){const t=String(c.type||'');if(!/case|souvenir|package/i.test(t))continue;const ids=[...(c.contains||[]).map(o=>addSkin(o)),...(c.contains_rare||[]).map(o=>addSkin(o,'g'))].filter(x=>x!=null);if(ids.length<2)continue;BASE.push({n:c.name,c:/souvenir/i.test(t)?'Сувенирные':'Кейсы',e:'📦',img:c.image||null,s:[...new Set(ids)],d:c.first_sale_date||''})}
+BASE.forEach(c=>c.p=casePrice(c));upNote();return BASE.length>0}
+function fallback(){S=[];IDX=new Map();S0.forEach(x=>{S.push([...x,null]);IDX.set(x[0],S.length-1)});BASE=BASE0.map(c=>({...c,img:null,d:''}));note='офлайн: встроенная мини-база (нет доступа к CSGO-API)'}
+function pickFile(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j))throw new Error('не массив');save();try{SV=JSON.parse(localStorage.getItem('ch3')||'null')}catch(e){}
+if(!build(j)){fallback();toast('В файле нет кейсов');return}load();render();toast('Загружено: '+BASE.length+' кейсов')}catch(e){toast('Не удалось прочитать файл: '+e.message)}};r.readAsText(f)}
+async function boot(){const app=document.getElementById('app');app.innerHTML='<h2>Загружаю базу CS2…</h2><p class="sub">Нужен интернет. Файл большой, это может занять до минуты.</p>';
+let ok=false;const cr0=await jf('crates.json');
+if(cr0&&cr0.length){app.innerHTML='<h2>Обрабатываю кейсы…</h2>';ok=build(cr0);if(ok){const al=await jf('skins.json');if(al&&al.forEach){al.forEach(o=>addSkin(o));upNote()}}}
+if(!ok)fallback();ready=true;load();render()}
+boot();
+</script></body></html>
